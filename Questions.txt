@@ -1,0 +1,247 @@
+1.&$var ile $var yazisi arasindaki ferqi funksiyalarda goruruk:
+<?php
+function exampleOne($a){ $a++; }// $a yazanda funksiyaya a parametrini oturende a-nin sureti uzerinde ishleyir, ozu deyishilmez olaraq qalir.
+function exampleTwo(&$a){ $a++;}//&$a yazilishinda ise funksiya original qiymetin uzerinde ishleyir.
+
+$a=5;
+
+exampleOne($a);
+echo $a;//5-chunki suretinin qiymeti artib, originali yene de 5di.
+
+exampleTwo($a);
+echo $a;//6 -originali bir vahid artib.
+
+?>
+Oz qiymetini deyishmeden ustunde emeliyyat aparmaq , ve ya faizle oz qiymetini artirmaq ve s. yerlerde (xususen bank accountlarda) istifade oluna biler.
+
+
+
+2. $var deyishen; $$var "deyishen deyishendir". 
+$var1="hello"
+$$var1="world" //burda $$var1 => $hello demekdir.
+ 
+echo "$var1 ${$var1} " //hello world
+echo "$var1 $hello" //hello world
+
+$var1="bye"; //$var1-i deyishsek $$var1=$bye olacaq.
+echo "$bye" //world
+
+
+
+3. isset Boolean deyer(true/false) donderir. Eger deyishenin qiymeti varsa, true, eks halda false qaytarir.
+$a=5;
+$b=null;
+$c;
+
+var_dump(isset($a));//true 
+var_dump(isset($b));//false 
+var_dump(isset($c));//false
+var_dump(isset($d));//false
+var_dump(isset($a, $b, $c));//false - yalniz butun deyishenlerin qiymeti oldugu halda true qaytarir.
+
+
+
+
+4.serialize function her hansi bir deyerin data tipi ile birlikde yadda saxlanmasi uchundur.
+$a=5;
+$a=serialize($a);
+echo $a;//output: i:5; --(int value=5)
+
+$f="hello";
+$f=serialize($f);
+echo $f; //output: s:5:"hello" --(string size=5 value="hello"  string:size:value)
+
+$c=5.6;
+$c=serialize($c);
+echo $c;//output: d:5.5999999999999996; --(double, value=5.5999999999999996);
+
+$s=true;
+$s=serialize($s);
+echo $s;//output: b:1 --(boolean, value=1)
+
+$d=[27,48,39,20];
+$d=serialize($d);
+echo $d;//output: a:4:{i:0;i:27;i:1;i:48;i:2;i:39;i:3;i:20;} --(array , size , key, value)
+
+
+Oz deyerini geri goturmek uchun:
+$a=unserialize($a);
+echo $a;//output: 5;
+
+
+
+
+5.1 chixacaq . chunki bar funksiyasi $a deyishenini gore bilmez. netice olaraq Null qaytarar. foo funksiyasi da hemin null-u bir vahid artiranda cavab 1 olur.
+
+
+6.<?php 
+$juice = "apple";
+$juice="He drank some ".$juice." juice.";
+echo $juice;
+?>
+(tam olaraq bu istenilirdi ya yox anlamadim)
+
+7.unset- deyishenin deyerin silir.
+$a=7;
+unset($a);
+var_dump($a)//output:Null;
+
+unlink ise fayli silir.  text.txt kimi bir faylimiz varsa, unlink ('text.txt') yazanda text.txt fayli silinir.
+
+
+8.B-array. sira ile $records arrayinin butun elementlerin yoxlayir ve key-i "first_name" olan elementleri arraya yigir.
+
+
+9. function length($string){
+    $k=0;
+    while($string[$k]!=null){ $k++;}
+    return $k;
+}
+
+10.true. chunki and-dan qabaq $x deyishenine true set olunur. => ($x=true)and false kimi davranir.
+
+11.$x = NULL
+     if ('0xFF' == 255) { // shert odenilir, 0x-hexadecimal base bildirir, hexadecimalda FF decimalda 255-e beraberdir.
+    $x = (int)'0xFF';//int deyeri evvelden yoxlayir ve sadece sirayla ilk ededleri goturur. eger(int)'a74839' olsa da, herfe gore 0 qaytarir.
+} 
+
+output:0;
+
+
+12.$i = 016;// 0 octal numberi bildirir. 
+    echo $i / 2;        //octal16= 14 decimal ,ona gore de 14/2=7'
+output:7;
+
+
+
+13.Static keyboardi istifade olunan zaman funksiyadan sadece classin adi ile, yani obyekt yaratmadan da istifade etmek mumkun olur.
+Static deyishenlerde alinan netice yaddasha yazilir.
+class Foo {
+    public static function aStaticMethod() {
+        static $a=5;
+        echo $a;
+        $a++;
+    }
+}
+
+Foo::aStaticMethod();//5
+Foo::aStaticMethod();//6
+Foo::aStaticMethod();//7
+ 
+static $a=5 olmasaydi, netice 5 5 5 olardi, chunki her defe ustune yazacaqdi. Static deyishenleri obyekt->deyishen kimi istifade etmek olmur, obyekt::deyishen
+kimi chagirilmalidir. Methodlari ise her iki usulla chagirmaq mumkundur.
+
+Final funksiyalari bashqa bir class override ede bilmez. Final class-lari bashqa class extend ede bilmez. Deyishenlerde final olmur.
+
+14.Sessions her istifadeci uchun ayrica ID yaradir ve deyishenleri hemin ID-e uygun olaraq serverde depolayir. Istifadeci browseri baglayanda Sessionlar da silinir.
+cookies websitelarin istifadechinin komputerinde saxladigi melumatlardir. Dil, satish saytlarinda sechdiyimiz mehsullar ve s. bu kimi melumatlar saxlanilir.
+Meqsed her istifadechiye uygun tenzimlemelerin avtomatik gelmesi, istifadechiye daha rahat olmasidir.
+
+15.Fatal error. Private ve protected funksiyani birbasha chagirmaq olmur.
+
+16. Traitler bashqa classlara elave edib istifade ede bileceyimiz methodlar qrupudur. Classlara oxshayir, lakin traiti classa elave etmemish istifade etmek olmur.
+Bir nov kod tekrarinin qarshisini alir ve sadeleshdirir.
+
+trait HelloWorld {
+		public function printHelloWorld() { echo "Hello World"; }
+	}
+	
+	class Example { 
+		use HelloWorld; 
+	}
+
+
+	$new = new Example;
+	$new->printHelloWorld();
+	 
+Example classinda printHelloWorld methodu yox idi, hemin methodu traitden alib.
+
+
+17.<?php
+class ConnectDb{
+ public function connect($servername, $username, $password,$db_name){
+    return $db_con=mysqli_connect($servername, $username,       $password,$db_name);
+    }
+}
+
+$connection= new ConnectDb;
+
+var_dump($connection->connect("localhost", "root","","Oxu.az"))
+?>;
+
+18.__Consrtuct funksiyasi terefinden.
+
+19. function calculate($string){
+    if(strpos($string,"+")){
+        $num=explode("+",$string);
+        return $num[0]+$num[1];
+    }
+    if(strpos($string,"-")){
+        $num=explode("-",$string);
+        return $num[0]-$num[1];
+    }
+    if(strpos($string,"*")){
+        $num=explode("*",$string);
+        return $num[0]*$num[1];
+    }
+    if(strpos($string,"/")){
+        $num=explode("/",$string);
+        if($num[1]!=0){
+            return $num[0]/$num[1];
+        }
+        else{
+            return "Error";
+        }
+    }
+};
+
+20.Serialize funksiyasi chagirilarken evvelce obyektde _sleep deye funksiyanin olub olmadigini yoxlayir. _sleep funksiyasi parametr qebul etmir ve yalniz serialize
+cagirilanda ishe dushur, bir array qaytarmalidir, hansiki serialize yalniz hemin arrayin elementleri uzerinde ishleyecek, qalanlar ise silinecek. Istenmeyen fayllari
+dashimaq lazim olmayanda istifade olunur._wakeupda eyni mentiq olaraq unserialize uchun ishleyir.
+
+21.session_unset butun sessionlarin deyerini silir(unset funksiyasi kimi). 
+session_unregister PHP 5.4.0dan etibaren silinib.
+
+22.$GLOBALS butun deyishenlerin global deyerini saxlayan bir arraydir. Istediyimiz deyishenin adini key olaraq yazib istifade ede bilerik.
+<?php
+function test() {
+    $foo = "local variable";
+
+    echo '$foo in global scope: ' . $GLOBALS["foo"] . "\n"; 	//Output:Example content
+    echo '$foo in current scope: ' . $foo . "\n";		//Output: local variable
+}
+
+$foo = "Example content";
+test();
+?>
+
+23.$_FILES['img']['error']
+
+24.HTML ile:
+<input type="file" name="myImage" accept="image/png, image/gif, image/jpeg" />
+
+PHP ile:
+if ($_FILES["img"]['type'] == 'image/jpeg' || $_FILES["img"]['type'] == 'image/png'|| $_FILES["img"]['type'] == 'image/gif'){..........}
+
+25. $a="Hello"."World"; //Iki stringi birleshdirir
+$b="Hello";
+$b.="World"; //Deyishenin ozunden evvelki deyerini saxlamaqla sonuna yazir. 
+
+echo $a;//Hello world
+echo $b;//Hello world
+
+26.getimagesize($filename) vasitesi ile. (array qaytarir)
+
+27.4 esas error novu var:(4den choxdur, lakin en chox rastlashilanlar bunlardir)
+Parse Error (Syntax Error) // Proqrami dayandirir.Sintaksis sehvlerini bildirir. ( ;, deyishenlerin evvelinde $, sehv moterize ve s. bu kimi errorlar)
+Fatal Error //Proqrami dayandirir.Php istifadechinin ne etmek istediyini basha dushur, lakin istifadechinin istediyi qaydalara ziddir. ( sual 15deki kimi. )
+Warning Error// Bu errorlar proqrami dayandirmir, yalniz istifadechini xeberdar edir. meselen fread(filename, filesize())-da filesize 0 olanda warning mesaji verir.
+Notice Error//Warning kimi proqrami dayandirmir, adeten mueyyen olunmamish deyishen istifade edende olur. 
+
+28.PHP_SELF hemin anda uzerinde ishlediyimiz faylin adini ve pathini qaytarir. Daha cox form yaradarken action olaraq sehifenin ozune qayitmasi ucun istifade olunur.
+ <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+
+29.Interfacede public methodlar yaziriq(ancaq adlarini ve alacaqlari deyishenleri ), sonra her hansi bir classa elave edib hemin methodlarin ichin doldurub istifade edirik.
+Interfacede adicekilen funksiya mutleq classda istifade olunmalidir, eks halda fatal error verecek. Bir class bir neche interface ishlede biler.
+
+30.PHP  mail(to,subject,message,headers,parameters) funksiyasi ile.
